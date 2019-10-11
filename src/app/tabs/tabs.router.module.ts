@@ -37,11 +37,15 @@ const routes: Routes = [
           }
         ]
       },
+      // { 
+      //   path:'modal/:id',
+      //   loadChildren: '../modal/modal.module#ModalPageModule' 
+      // },
       {
         path: '',
         redirectTo: '/tabs/tab1',
         pathMatch: 'full'
-      }
+      },
     ]
   },
   {
