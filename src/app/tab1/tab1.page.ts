@@ -1,49 +1,61 @@
 import { Component } from '@angular/core';
-import { NavController, ModalController } from '@ionic/angular';
+import { HttpClient } from '@angular/common/http';
+import { ModalController } from '@ionic/angular';
 import { ModalPage } from '../modal/modal.page';
+import { NewsURLService } from '../news-url.service'
+
+export class Source {
+	id: string;
+	name: string;
+}
+export class News {
+	source: Source;
+	author: string;
+	title: string;
+	description: string;
+	url: string;
+	urlToImage: string;
+	publishedAt: string;
+	content: string;
+}
 
 @Component({
   selector: 'app-tab1',
   templateUrl: 'tab1.page.html',
   styleUrls: ['tab1.page.scss']
 })
+
 export class Tab1Page {
-  private selectedItem: any;
-  private icons = [
-    'flask',
-    'wifi',
-    'beer',
-    'football',
-    'basketball',
-    'paper-plane',
-    'american-football',
-    'boat',
-    'bluetooth',
-    'build'
-  ];
-  // Create an array of custom objects.
-  public items: Array<{ title: string; note: string; icon: string }> = [];
+  newsArray: Array<News>;
+	totalNews: number;
 
-  constructor(private modalController: ModalController) { 
-    for (let i = 0; i < this.icons.length; i++) {
-      this.items.push({
-        title: 'Item ' + i,
-        note: 'This is item #' + i,
-        icon: this.icons[i]
-      });
-    }
+  constructor(private http: HttpClient, private modalController: ModalController, private newsURL: NewsURLService) { 
   }
+
   ngOnInit() {
+    this.fetchNews();
   }
 
-  async openModal(){
+  fetchNews() {
+		this.http.get<any>(this.newsURL.getTopHeadlines())
+			.subscribe(result => {
+			  this.newsArray = result.articles;
+			  this.totalNews = result.totalResults;
+			  console.log(this.newsArray);
+			}, 
+			error =>{
+			  alert(error);
+			  console.error(error)
+			})
+	  }
+
+  async openModal(index: number){
     const modal = await this.modalController.create({
       component: ModalPage,
       componentProps: {
-        custom_id: "James Wong"
+        selectedNews: this.newsArray[index]
       }
     });
-    console.log("hello world!");
 
     return await modal.present();
   }

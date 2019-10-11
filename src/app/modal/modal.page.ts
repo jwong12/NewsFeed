@@ -8,23 +8,27 @@ import { NavParams, ModalController } from '@ionic/angular';
 })
 export class ModalPage implements OnInit {
   id:string;
-  data  = null;
+  data: any;
 
   constructor(private navParams: NavParams, private modalController: ModalController){
   }
   ngOnInit() {
-    this.data = this.navParams.get('custom_id');
-    console.log(this.data);
-    // this.id = this.route.snapshot.paramMap.get('id');   
-
+    this.data = this.navParams.get('selectedNews');
   }
-  // Ionic tab pages are initialized in the constructor only once. 
-  // ionViewWillEnter() is called every time the tab page is viewed.
-  ionViewWillEnter(){
+
+  getPublisher(){
+    if(this.data.author !== null && this.data.author !== "") {
+      return "Published by " + this.data.author;
+    }
+  }
+  getDate() {
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const month = parseInt(this.data.publishedAt.slice(5,7)) - 1;
+
+    return months[month] + " " + this.data.publishedAt.slice(8,10) + ", " + this.data.publishedAt.slice(0,4);
   }
 
   closeModal(){
     this.modalController.dismiss();
   }
-
 }
