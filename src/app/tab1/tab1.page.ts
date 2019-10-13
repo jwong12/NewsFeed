@@ -26,38 +26,60 @@ export class News {
 })
 
 export class Tab1Page {
-  newsArray: Array<News>;
+	newsArray: Array<News> =[];
 	totalNews: number;
+	maximumPages: number;
+	page = 1;
 
-  constructor(private http: HttpClient, private modalController: ModalController, private newsURL: NewsURLService) { 
-  }
+	constructor(private http: HttpClient, private modalController: ModalController, private newsURL: NewsURLService) { 
+	}
 
-  ngOnInit() {
-    this.fetchNews();
-  }
+	ngOnInit() {
+	this.fetchNews();
+	}
 
-  fetchNews() {
-		this.http.get<any>(this.newsURL.getTopHeadlines())
+	fetchNews(event?) {
+		this.http.get<any>(this.newsURL.getTopHeadlines(this.page))
 			.subscribe(result => {
-			  this.newsArray = result.articles;
-			  this.totalNews = result.totalResults;
-			  console.log(this.newsArray);
+				this.newsArray = this.newsArray.concat(result.articles);
+				this.totalNews = result.totalResults;
+				this.maximumPages = Math.ceil(this.totalNews / 20);
+				  	console.log(this.newsArray);
+					console.log(this.totalNews)
+					console.log(this.maximumPages)
+
+					if(event) {
+						event.target.complete();
+					}
 			}, 
 			error =>{
-			  alert(error);
-			  console.error(error)
+				alert(error);
+				console.error(error)
 			})
-	  }
+	}
 
-  async openModal(index: number){
-    const modal = await this.modalController.create({
-      component: ModalPage,
-      componentProps: {
-        selectedNews: this.newsArray[index]
-      }
-    });
+	loadMoreData(event) {
+		console.log(event);
+		this.page++
+		this.fetchNews(event);
+
+		if(this.page === this.maximumPages) {
+			event.target.disabled = true;
+		}
+	}
+
+	async openModal(index: number){
+		const modal = await this.modalController.create({
+			component: ModalPage,
+			componentProps: {
+			selectedNews: this.newsArray[index]
+			}
+	});
 
     return await modal.present();
   }
+
+  
+
 
 }
