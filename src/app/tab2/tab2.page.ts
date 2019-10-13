@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Storage } from '@ionic/storage';
 
 @Component({
   selector: 'app-tab2',
@@ -6,11 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['tab2.page.scss']
 })
 export class Tab2Page {
-  items: any[];
+  items: Array<any> = [];
   currentItem = "";
 
-  constructor() {
-    this.items = [ "Finish Project 007", "Study for Angular final", "Do groceries", "Go to the gym"];
+  constructor(private storage: Storage) {
+    this.storage.get('items').then((val) => {
+      this.items = JSON.parse(val);
+    });
   }
 
   addItem(item){
@@ -19,16 +22,19 @@ export class Tab2Page {
     if(text !== "") {
       this.items.push(text);
       this.currentItem = "";
+      this.storage.set('items', JSON.stringify(this.items));
     }
   }
 
   removeItem(index) {
     this.items.splice(index, 1);
+    this.storage.set('items', JSON.stringify(this.items));
   }
 
   reorderItems(event) {
     const itemToMove = this.items.splice(event.detail.from, 1)[0];
     this.items.splice(event.detail.to, 0, itemToMove);
+    this.storage.set('items', JSON.stringify(this.items));
     event.detail.complete();
   }
 
