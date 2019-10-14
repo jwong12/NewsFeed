@@ -5,7 +5,7 @@
 </ion-header>
 
 <ion-content>
-<ion-searchbar [(ngModel)]="inputKeyword" (keydown.enter)="searchNews(inputKeyword)" animated placeholder="Search Topic"></ion-searchbar>
+<ion-searchbar [(ngModel)]="inputKeyword" (keyup.enter)="searchNews()" animated placeholder="Search Topic"></ion-searchbar>
 
   <ion-card (click)="openModal(i)" *ngFor="let new of newsArray; let i = index">
     <ion-card-header>

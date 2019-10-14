@@ -28,7 +28,7 @@ export class News {
 export class Tab1Page {
 	newsArray: Array<News> =[];
 	newsTypeId = 1;
-	inputKeyword: string;
+	inputKeyword = "";
 	savedKeyword: string;
 	totalNews: number;
 	maximumPages: number;
@@ -71,8 +71,6 @@ export class Tab1Page {
 	loadMoreData(event) {
 		this.page++
 		this.fetchNews(this.newsTypeId, event);
-		console.log(this.totalNews);
-		console.log(this.maximumPages);
 
 		// max requests per search is 5 on newsapi.org for free plan members
 		if(this.page === this.maximumPages || this.page === 5) {
@@ -80,23 +78,25 @@ export class Tab1Page {
 		}
 	}
 
-	searchNews(value) {
-		console.log(value);
+	searchNews() {
+		const value = this.inputKeyword;
 		const formattedValue = value.trim().replace(/ +/g,'-');
-		console.log(formattedValue)
-		this.savedKeyword = formattedValue
-		this.newsTypeId = 2;
-		this.newsArray = [];
-		this.page = 1;
-		this.fetchNews(this.newsTypeId);
-		this.inputKeyword = '';
+
+		if(formattedValue !== "") {
+			this.savedKeyword = formattedValue
+			this.newsTypeId = 2;
+			this.newsArray = [];
+			this.page = 1;
+			this.fetchNews(this.newsTypeId);
+			this.inputKeyword = "";
+		}		
 	}
 
 	async openModal(index: number){
 		const modal = await this.modalController.create({
 			component: ModalPage,
 			componentProps: {
-			selectedNews: this.newsArray[index]
+				selectedNews: this.newsArray[index]
 			}
 	});
 
