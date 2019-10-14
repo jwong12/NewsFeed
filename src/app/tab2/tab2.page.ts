@@ -12,7 +12,12 @@ export class Tab2Page {
 
   constructor(private storage: Storage) {
     this.storage.get('items').then((val) => {
-      this.items = JSON.parse(val);
+      if(val !== "" && val !== null) {
+        this.items = JSON.parse(val);
+
+      } else {
+        this.items = []
+      }
     });
   }
 

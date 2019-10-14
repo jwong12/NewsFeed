@@ -39,11 +39,11 @@ export class Tab1Page {
 	}
 
 	ngOnInit() {
-		// this.newsTypeId = 1;
 		this.fetchNews(this.newsTypeId);
 	}
 
-	// newsType= 1 for top headlines and 2 to search a topic
+	// newsType: 	1 for top headlines
+	// 				2 for a topic search
 	fetchNews(newsType: number, event?) {
 		let URL;
 
@@ -64,7 +64,6 @@ export class Tab1Page {
 					}
 			}, 
 			error =>{
-				alert(error);
 				console.error(error)
 			})
 	}
@@ -75,7 +74,8 @@ export class Tab1Page {
 		console.log(this.totalNews);
 		console.log(this.maximumPages);
 
-		if(this.page === this.maximumPages) {
+		// max requests per search is 5 on newsapi.org for free plan members
+		if(this.page === this.maximumPages || this.page === 5) {
 			event.target.disabled = true;
 		}
 	}
