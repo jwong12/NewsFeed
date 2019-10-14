@@ -5,18 +5,19 @@
 </ion-header>
 
 <ion-content>
-  
-      <ion-card (click)="openModal(i)" *ngFor="let new of newsArray; let i = index">
-        <ion-card-header>
-          <ion-card-subtitle>{{new.author}}</ion-card-subtitle>
-          <ion-card-title>{{new.title}}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>{{new.description}}</ion-card-content>
-      </ion-card>
+<ion-searchbar [(ngModel)]="inputKeyword" (keydown.enter)="searchNews(inputKeyword)" animated placeholder="Search Topic"></ion-searchbar>
 
-  <ion-infinite-scroll threshold="15%" (ionInfinite)="loadMoreData($event)">
+  <ion-card (click)="openModal(i)" *ngFor="let new of newsArray; let i = index">
+    <ion-card-header>
+      <ion-card-subtitle>{{new.author}}</ion-card-subtitle>
+      <ion-card-title>{{new.title}}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>{{new.description}}</ion-card-content>
+  </ion-card>
+
+  <ion-infinite-scroll threshold="10%" (ionInfinite)="loadMoreData($event)">
     <ion-infinite-scroll-content
-      loadingSpinner="bubbles"
+      loadingSpinner="crescent"
       loadingText="Loading more data...">
     </ion-infinite-scroll-content>
   </ion-infinite-scroll>

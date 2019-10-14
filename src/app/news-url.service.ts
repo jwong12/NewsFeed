@@ -11,8 +11,18 @@ export class NewsURLService {
   getTopHeadlines(pageNumber: number = 1) {
     return 'https://newsapi.org/v2/top-headlines?' +
           'country=us&' + 
-          'page=' + 
-          pageNumber +
+          'page=' + pageNumber +
+          API_KEY;
+  }
+  getNewsByTopic(pageNumber: number = 1, searchKeyword: string) {
+    console.log(searchKeyword);
+    console.log('https://newsapi.org/v2/everything?' +
+    'q=' + searchKeyword +
+    '&page=' + pageNumber +
+    API_KEY);
+    return 'https://newsapi.org/v2/everything?' +
+          'q=' + searchKeyword +
+          '&page=' + pageNumber +
           API_KEY;
   }
 }

@@ -27,27 +27,38 @@ export class News {
 
 export class Tab1Page {
 	newsArray: Array<News> =[];
+	newsTypeId = 1;
+	inputKeyword: string;
+	savedKeyword: string;
 	totalNews: number;
 	maximumPages: number;
 	page = 1;
 
-	constructor(private http: HttpClient, private modalController: ModalController, private newsURL: NewsURLService) { 
+
+	constructor(private http: HttpClient, private modalController: ModalController, private restAPI: NewsURLService) { 
 	}
 
 	ngOnInit() {
-	this.fetchNews();
+		// this.newsTypeId = 1;
+		this.fetchNews(this.newsTypeId);
 	}
 
-	fetchNews(event?) {
-		this.http.get<any>(this.newsURL.getTopHeadlines(this.page))
+	// newsType= 1 for top headlines and 2 to search a topic
+	fetchNews(newsType: number, event?) {
+		let URL;
+
+		if(newsType === 1) {
+			URL = this.restAPI.getTopHeadlines(this.page)
+		} else {
+			URL = this.restAPI.getNewsByTopic(this.page, this.savedKeyword)
+		}
+
+		this.http.get<any>(URL)
 			.subscribe(result => {
 				this.newsArray = this.newsArray.concat(result.articles);
 				this.totalNews = result.totalResults;
 				this.maximumPages = Math.ceil(this.totalNews / 20);
-				  	console.log(this.newsArray);
-					console.log(this.totalNews)
-					console.log(this.maximumPages)
-
+				
 					if(event) {
 						event.target.complete();
 					}
@@ -59,13 +70,26 @@ export class Tab1Page {
 	}
 
 	loadMoreData(event) {
-		console.log(event);
 		this.page++
-		this.fetchNews(event);
+		this.fetchNews(this.newsTypeId, event);
+		console.log(this.totalNews);
+		console.log(this.maximumPages);
 
 		if(this.page === this.maximumPages) {
 			event.target.disabled = true;
 		}
+	}
+
+	searchNews(value) {
+		console.log(value);
+		const formattedValue = value.trim().replace(/ +/g,'-');
+		console.log(formattedValue)
+		this.savedKeyword = formattedValue
+		this.newsTypeId = 2;
+		this.newsArray = [];
+		this.page = 1;
+		this.fetchNews(this.newsTypeId);
+		this.inputKeyword = '';
 	}
 
 	async openModal(index: number){
@@ -78,8 +102,4 @@ export class Tab1Page {
 
     return await modal.present();
   }
-
-  
-
-
 }
